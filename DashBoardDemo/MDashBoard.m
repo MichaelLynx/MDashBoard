@@ -22,7 +22,6 @@
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        self.centerPoint = CGPointMake(frame.size.width/2.0, frame.size.height);
         self.showAnimation = YES;
         self.animationDuration = 1.0f;
         self.maxScore = 100;
