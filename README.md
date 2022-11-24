@@ -2,5 +2,6 @@
 
 
 
-![dashboard](https://i.niupic.com/images/2020/07/23/8rYr.png)
+![example01](example01.png)
 
+![example02](example02.png)
