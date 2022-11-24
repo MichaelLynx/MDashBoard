@@ -2,6 +2,6 @@
 
 
 
-![example01](example01.png)
+![semicircle](example01.png)
 
-![example02](example02.png)
+![circle](example02.png)

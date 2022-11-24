@@ -14,6 +14,7 @@ typedef NS_ENUM(NSUInteger, MDashBoardCircleType) {
 
 @interface MDashBoard : UIView
 
+/// The default style is semicircle.
 @property(nonatomic, assign) MDashBoardCircleType circleType;
 /// The default value is Yes.
 @property (nonatomic, assign) BOOL showAnimation;
@@ -33,5 +34,7 @@ typedef NS_ENUM(NSUInteger, MDashBoardCircleType) {
 - (void)setupInterface;
 - (void)setupInterfaceWithValue:(double)value;
 - (void)setupInterfaceWithValue:(double)value color:(UIColor *)color;
+/// Default Setting.
+- (void)resetInterface;
 
 @end

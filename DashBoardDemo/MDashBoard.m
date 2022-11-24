@@ -10,11 +10,13 @@
 
 @interface MDashBoard ()
 
+@property (nonatomic, strong) UILabel *contentLabel;
+
 @property (nonatomic, assign) CGFloat radius;
 @property (nonatomic, assign) CGPoint centerPoint;
 
 @property (nonatomic, assign) CGFloat count;
-@property (nonatomic, strong) UILabel *contentLabel;
+@property (nonatomic, assign) CGFloat rate;
 
 @end
 
@@ -32,8 +34,7 @@
 #pragma mark - Publick Method
 
 - (void)setupInterface {
-    CGFloat rate = self.circleType == MDashBoardTypeHalf ? 1.0 : 2.0;
-    self.centerPoint = CGPointMake(self.frame.size.width/2.0, self.frame.size.height/rate);
+    self.centerPoint = CGPointMake(self.frame.size.width/2.0, self.frame.size.height/self.rate);
     
     [self removeAllSubLayers];
     [self drawBackGrayCircle];
@@ -48,10 +49,20 @@
 
 - (void)setupInterfaceWithValue:(double)value color:(UIColor *)color {
     self.currentValue = value;
-    if (color) {
-        self.strokeColor = color;
-    }
+    self.strokeColor = color;
     [self setupInterface];
+}
+
+- (void)resetInterface {
+    self.showAnimation = YES;
+    self.animationDuration = 1.0f;
+    self.maxValue = 100;
+    
+    self.circleType = MDashBoardTypeHalf;
+    self.lineWidth = 0;
+    self.currentValue = 0;
+    self.strokeColor = nil;
+    self.bgColor = nil;
 }
 
 #pragma mark - Private Method
@@ -73,8 +84,7 @@
 
 - (void)drawCircle {
     UIBezierPath *circlePath = [[UIBezierPath alloc] init];
-    CGFloat rate = self.circleType == MDashBoardTypeHalf ? 1.0 : 2.0;
-    CGFloat endAngle = self.currentValue * rate/self.maxValue * M_PI - M_PI;
+    CGFloat endAngle = self.currentValue * self.rate/self.maxValue * M_PI - M_PI;
     [circlePath addArcWithCenter:self.centerPoint radius:self.radius startAngle:-M_PI endAngle:endAngle clockwise:YES];
 
     CAShapeLayer *circleLayer = [[CAShapeLayer alloc] init];
@@ -156,6 +166,11 @@
     return _lineWidth;
 }
 
+- (CGFloat)rate {
+    CGFloat result = self.circleType == MDashBoardTypeHalf ? 1.0 : 2.0;
+    return result;
+}
+
 - (UIColor *)strokeColor {
     if (!_strokeColor) {
         _strokeColor = [UIColor colorWithRed:122/255.0 green:193/255.0 blue:67/255.0 alpha:1];
@@ -165,7 +180,7 @@
 
 - (UIColor *)bgColor {
     if (!_bgColor) {
-        _bgColor = [UIColor colorWithRed:235/255.0 green:235/255.0 blue:235/255.0 alpha:1];
+        _bgColor = [UIColor clearColor];
     }
     return _bgColor;
 }

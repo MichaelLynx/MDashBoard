@@ -31,15 +31,15 @@
     }];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        dashBoard.currentValue = 30;
+        dashBoard.currentValue = 70;
+        dashBoard.circleType = MDashBoardTypeAll;
         dashBoard.strokeColor = [UIColor purpleColor];
-        dashBoard.circleType = MDashBoardTypeHalf;
+        dashBoard.lineWidth = 20;
         [dashBoard setupInterface];
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            dashBoard.strokeColor = nil;
-            dashBoard.circleType = MDashBoardTypeAll;
-            [dashBoard setupInterfaceWithValue:75];
+            [dashBoard resetInterface];
+            [dashBoard setupInterfaceWithValue:80];
         });
     });
 }
