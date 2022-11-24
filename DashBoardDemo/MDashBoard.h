@@ -7,24 +7,31 @@
 //
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSUInteger, MDashBoardCircleType) {
+    MDashBoardTypeHalf = 0, // semicircle.
+    MDashBoardTypeAll       // circle.
+};
+
 @interface MDashBoard : UIView
 
-///The default value is Yes.
+@property(nonatomic, assign) MDashBoardCircleType circleType;
+/// The default value is Yes.
 @property (nonatomic, assign) BOOL showAnimation;
-///The default value is 1s.
+/// The default value is 1s.
 @property (nonatomic, assign) CGFloat animationDuration;
-///The default value is 14.
+/// The default value is 14.
 @property (nonatomic, assign) CGFloat lineWidth;
-///The default value is 100.
-@property (nonatomic, assign) CGFloat maxScore;
-@property (nonatomic, assign) CGFloat score;
-
+/// Background Color.
 @property (nonatomic, strong) UIColor *bgColor;
+/// Stroke Color.
 @property (nonatomic, strong) UIColor *strokeColor;
+/// The default value is 100.
+@property (nonatomic, assign) CGFloat maxValue;
+/// Current Value.
+@property (nonatomic, assign) CGFloat currentValue;
 
-- (void)strokePath;
-
-- (void)updateInterfaceWithValue:(double)value;
-- (void)updateInterfaceWithValue:(double)value color:(UIColor *)color;
+- (void)setupInterface;
+- (void)setupInterfaceWithValue:(double)value;
+- (void)setupInterfaceWithValue:(double)value color:(UIColor *)color;
 
 @end

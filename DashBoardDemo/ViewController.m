@@ -27,17 +27,19 @@
     [dashBoard mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.view);
         make.width.mas_equalTo(300);
-        make.height.mas_equalTo(150);
+        make.height.mas_equalTo(300);
     }];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        dashBoard.score = 30;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dashBoard.currentValue = 30;
         dashBoard.strokeColor = [UIColor purpleColor];
-        [dashBoard strokePath];
+        dashBoard.circleType = MDashBoardTypeHalf;
+        [dashBoard setupInterface];
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             dashBoard.strokeColor = nil;
-            [dashBoard updateInterfaceWithValue:75];
+            dashBoard.circleType = MDashBoardTypeAll;
+            [dashBoard setupInterfaceWithValue:75];
         });
     });
 }

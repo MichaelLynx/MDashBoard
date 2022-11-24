@@ -13,8 +13,8 @@
 @property (nonatomic, assign) CGFloat radius;
 @property (nonatomic, assign) CGPoint centerPoint;
 
-@property (nonatomic, strong) UILabel *scoreLb;
-@property (nonatomic, assign) CGFloat currentScore;
+@property (nonatomic, assign) CGFloat count;
+@property (nonatomic, strong) UILabel *contentLabel;
 
 @end
 
@@ -24,15 +24,16 @@
     if (self = [super initWithFrame:frame]) {
         self.showAnimation = YES;
         self.animationDuration = 1.0f;
-        self.maxScore = 100;
+        self.maxValue = 100;
     }
     return self;
 }
 
 #pragma mark - Publick Method
 
-- (void)strokePath {
-    self.centerPoint = CGPointMake(self.frame.size.width/2.0, self.frame.size.height);
+- (void)setupInterface {
+    CGFloat rate = self.circleType == MDashBoardTypeHalf ? 1.0 : 2.0;
+    self.centerPoint = CGPointMake(self.frame.size.width/2.0, self.frame.size.height/rate);
     
     [self removeAllSubLayers];
     [self drawBackGrayCircle];
@@ -40,36 +41,25 @@
     [self loadNoteInfo];
 }
 
-- (void)updateInterfaceWithValue:(double)value {
-    self.centerPoint = CGPointMake(self.frame.size.width/2.0, self.frame.size.height);
-    
-    self.score = value;
-    
-    [self removeAllSubLayers];
-    [self drawBackGrayCircle];
-    [self drawCircle];
-    [self loadNoteInfo];
+- (void)setupInterfaceWithValue:(double)value {
+    self.currentValue = value;
+    [self setupInterface];
 }
 
-- (void)updateInterfaceWithValue:(double)value color:(UIColor *)color {
-    self.centerPoint = CGPointMake(self.frame.size.width/2.0, self.frame.size.height);
-    
-    self.score = value;
+- (void)setupInterfaceWithValue:(double)value color:(UIColor *)color {
+    self.currentValue = value;
     if (color) {
         self.strokeColor = color;
     }
-    
-    [self removeAllSubLayers];
-    [self drawBackGrayCircle];
-    [self drawCircle];
-    [self loadNoteInfo];
+    [self setupInterface];
 }
 
 #pragma mark - Private Method
 
 - (void)drawBackGrayCircle {
+    CGFloat endAngle = self.circleType == MDashBoardTypeHalf ? 0 : M_PI;
     UIBezierPath *circlePath = [[UIBezierPath alloc] init];
-    [circlePath addArcWithCenter:self.centerPoint radius:self.radius startAngle:-M_PI endAngle:0 clockwise:YES];
+    [circlePath addArcWithCenter:self.centerPoint radius:self.radius startAngle:-M_PI endAngle:endAngle clockwise:YES];
     
     CAShapeLayer *circleLayer = [[CAShapeLayer alloc] init];
     circleLayer.lineWidth = self.lineWidth;
@@ -83,7 +73,8 @@
 
 - (void)drawCircle {
     UIBezierPath *circlePath = [[UIBezierPath alloc] init];
-    CGFloat endAngle = self.score/self.maxScore * M_PI - M_PI;
+    CGFloat rate = self.circleType == MDashBoardTypeHalf ? 1.0 : 2.0;
+    CGFloat endAngle = self.currentValue * rate/self.maxValue * M_PI - M_PI;
     [circlePath addArcWithCenter:self.centerPoint radius:self.radius startAngle:-M_PI endAngle:endAngle clockwise:YES];
 
     CAShapeLayer *circleLayer = [[CAShapeLayer alloc] init];
@@ -102,31 +93,30 @@
 }
 
 - (void)loadNoteInfo {
-    self.scoreLb = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.radius * 2, 50)];
-    self.scoreLb.font = [UIFont systemFontOfSize:36];
-    self.scoreLb.textColor = [UIColor blackColor];
-    self.scoreLb.textAlignment = NSTextAlignmentCenter;
-    self.scoreLb.center = self.centerPoint;
-    [self addSubview:self.scoreLb];
+    self.contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.radius * 2, 50)];
+    self.contentLabel.font = [UIFont systemFontOfSize:36];
+    self.contentLabel.textColor = [UIColor blackColor];
+    self.contentLabel.textAlignment = NSTextAlignmentCenter;
+    self.contentLabel.center = self.centerPoint;
+    [self addSubview:self.contentLabel];
     
     if (self.showAnimation) {
-        self.currentScore = 0;
-        
+        self.count = 0;
         CADisplayLink *displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(updateScore:)];
         [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     }else {
-        self.scoreLb.text = [NSString stringWithFormat:@"%.1f",self.score];
+        self.contentLabel.text = [NSString stringWithFormat:@"%.1f",self.currentValue];
     }
 }
 
 - (void)updateScore:(CADisplayLink *)displayLink {
-    self.currentScore += 1.0;
+    self.count += 1.0;
     
-    if (self.currentScore >= self.score) {
+    if (self.count >= self.currentValue) {
         [displayLink invalidate];
-        self.scoreLb.text = [NSString stringWithFormat:@"%.1f",self.score];
+        self.contentLabel.text = [NSString stringWithFormat:@"%.1f",self.currentValue];
     }else {
-        self.scoreLb.text = [NSString stringWithFormat:@"%.1f",self.currentScore];
+        self.contentLabel.text = [NSString stringWithFormat:@"%.1f",self.count];
     }
 }
 
